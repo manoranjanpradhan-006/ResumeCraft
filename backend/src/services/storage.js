@@ -3,23 +3,8 @@ import path from 'path';
 import crypto from 'crypto';
 import mongoose from 'mongoose';
 import { config } from '../config/config.js';
-
-// Schema for Mongoose if MongoDB is connected
-const userSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true, lowercase: true, trim: true },
-  passwordHash: { type: String, required: true },
-  name: { type: String, default: '' },
-  createdAt: { type: Date, default: Date.now }
-});
-
-const resumeSchema = new mongoose.Schema({
-  userId: { type: String, required: true, index: true },
-  title: { type: String, default: 'Untitled Resume' },
-  template: { type: String, default: 'ats' },
-  data: { type: Object, default: {} },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+import { User } from '../models/User.js';
+import { Resume } from '../models/Resume.js';
 
 let MongoUser = null;
 let MongoResume = null;
@@ -33,8 +18,8 @@ export async function initDatabase() {
       await mongoose.connect(config.mongodbUri, {
         serverSelectionTimeoutMS: 5000
       });
-      MongoUser = mongoose.model('User', userSchema);
-      MongoResume = mongoose.model('Resume', resumeSchema);
+      MongoUser = User;
+      MongoResume = Resume;
       isMongoConnected = true;
       console.log(' Successfully connected to MongoDB Database!');
       return;
