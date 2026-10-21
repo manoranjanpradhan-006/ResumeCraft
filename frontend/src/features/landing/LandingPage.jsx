@@ -79,6 +79,14 @@ export default function LandingPage({ onSelectTool }) {
             </button>
 
             <button
+              onClick={() => onSelectTool('tailor')}
+              className="px-5 py-3.5 rounded-xl bg-gradient-to-r from-indigo-900/60 via-purple-900/50 to-indigo-900/60 hover:from-indigo-800/80 hover:to-purple-800/70 text-indigo-200 border border-indigo-700/60 font-semibold text-sm flex items-center gap-2 shadow-lg transition-all active:scale-95"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>Auto-Tailor to JD</span>
+            </button>
+
+            <button
               onClick={() => onSelectTool('matcher')}
               className="px-5 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-100 border border-slate-700 font-semibold text-sm flex items-center gap-2 transition-all active:scale-95"
             >
@@ -208,6 +216,46 @@ export default function LandingPage({ onSelectTool }) {
               className="mt-6 w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-violet-600 text-xs font-semibold text-white flex items-center justify-center gap-2 transition"
             >
               <span>Try JD Matcher</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Card 3: AI Resume Tailor & Generator (BRAND NEW) */}
+          <div className="bg-gradient-to-br from-slate-900 via-indigo-950/30 to-slate-900 border border-indigo-800/40 rounded-2xl p-6 shadow-xl flex flex-col justify-between hover:border-indigo-500/70 transition-all group relative overflow-hidden md:col-span-2 lg:col-span-1">
+            <div className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-gradient-to-r from-indigo-500/20 to-violet-500/20 border border-indigo-500/40 text-[10px] font-bold text-indigo-300 uppercase flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-300" />
+              <span>AI Auto-Tailor</span>
+            </div>
+            <div className="space-y-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400 group-hover:scale-105 transition-transform">
+                <Sparkles className="w-6 h-6 text-indigo-400" />
+              </div>
+              <h3 className="text-lg font-bold text-white">
+                One-Click AI Resume Tailor & Generator
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Take your existing resume and paste any target job description. The AI analyzes the role, customizes your executive summary, reorders and injects demanded ATS skills, and rewrites bullet points with strong action verbs and metrics.
+              </p>
+              <ul className="space-y-1.5 text-xs text-slate-300">
+                <li className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Boosts match score by up to +35% with targeted phrasing</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Injects high-frequency keywords while keeping your real history</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>1-click load into Builder or sync to Job Tracker</span>
+                </li>
+              </ul>
+            </div>
+            <button
+              onClick={() => onSelectTool('tailor')}
+              className="mt-6 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-xs font-semibold text-white flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 transition"
+            >
+              <span>Tailor Resume to a Job Description</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

@@ -91,6 +91,18 @@ export default function Navbar({
           </button>
 
           <button
+            onClick={() => onNavigate('tailor')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              currentView === 'tailor'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-850'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+            <span>AI Tailor</span>
+          </button>
+
+          <button
             onClick={() => onNavigate('checker')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
               currentView === 'checker'

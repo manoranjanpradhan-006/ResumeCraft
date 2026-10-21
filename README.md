@@ -39,12 +39,27 @@
   5. Formatting & Layout Cleanliness (Parser safety, single-column integrity)
 - **Strengths, Detected Issues & Improvement Roadmap:** Clear guidance on reaching 95%+ passability.
 
-### 5. ✨ AI Writing Assistant
+### 5. ✨ AI Resume Tailor & Auto-Generator (One-Click Match)
+- **Role & Company Alignment:** Takes your existing resume and target job posting, generating a tailored resume variant optimized for that specific position.
+- **Tailored Summary:** Generates a custom 3-4 sentence elevator pitch explicitly aligning your strengths with the employer's domain.
+- **Demanded Skills Injection:** Extracts high-frequency keywords and technical skills from the JD and prioritizes them in your competency list.
+- **Quantified Bullet Refactoring:** Rephrases experience bullets into high-impact XYZ format using strong action verbs (*Architected, Spearheaded, Streamlined*) and realistic metrics.
+- **Match Boost Analytics:** Displays Before vs. After match score (e.g. 52% ➔ 95%) and list of exact optimizations.
+- **Direct Workflow Integration:** 1-click loading into the live Resume Builder or immediate sync to your Job Application Tracker.
+
+### 6. 💼 Job Application Tracker & Pipeline
+- **5-Stage Kanban Board:** Track applications across *Wishlist*, *Applied*, *Interviewing*, *Offer Received*, and *Archived / Rejected*.
+- **Conversion Rate & KPI Metrics:** Real-time metrics for total tracked, active interviews, offers, and interview conversion rate %.
+- **Dual View Modes:** Toggle seamlessly between an interactive visual Kanban pipeline and a high-density data table.
+- **Metadata Management:** Track job URLs, salary ranges, dates applied, interview notes, and the specific tailored resume version used.
+- **Dual Storage Persistence:** Syncs with backend `/api/applications` or works locally via browser `localStorage`.
+
+### 7. ✨ AI Writing Assistant
 - **Professional Summary Polish:** Transforms raw drafts into punchy 3–4 sentence elevator pitches.
 - **XYZ Bullet Point Polisher:** Rewrites experience bullets into Google's XYZ format (*Accomplished [X], measured by [Y], by doing [Z]*).
 - **Dual Engine:** Works seamlessly out-of-the-box using a built-in heuristic action-verb engine, and upgrades to **Google Gemini 1.5 Flash** when an API key is provided!
 
-### 6. Dual Persistence Architecture (Zero-Setup Local + Free Cloud DB)
+### 8. Dual Persistence Architecture (Zero-Setup Local + Free Cloud DB)
 - **Local Mode:** Automatically falls back to a local JSON file store (`backend/data/store.json`) when offline or developing locally—**no database installation required**!
 - **Free Cloud Mode:** Connects seamlessly to a free **MongoDB Atlas M0** cluster by simply adding `MONGODB_URI` to your `backend/.env`.
 

@@ -9,6 +9,7 @@ import LandingPage from './features/landing/LandingPage';
 import JobDescriptionMatcher from './features/tools/JobDescriptionMatcher';
 import AtsChecker from './features/tools/AtsChecker';
 import ApplicationTracker from './features/tracker/ApplicationTracker';
+import ResumeTailor from './features/tools/ResumeTailor';
 import { initialResumeData, emptyResumeData } from './data/sampleResume';
 import { authService } from './services/api';
 import { Edit3, Eye } from 'lucide-react';
@@ -17,7 +18,8 @@ const LOCAL_STORAGE_KEY = 'resumecraft_current_data';
 const LOCAL_TEMPLATE_KEY = 'resumecraft_current_template';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'builder' | 'matcher' | 'checker' | 'tracker'
+  const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'builder' | 'matcher' | 'tailor' | 'checker' | 'tracker'
+  const [tailorJobDescription, setTailorJobDescription] = useState('');
 
   const [resumeData, setResumeData] = useState(() => {
     try {
@@ -107,6 +109,16 @@ export default function App() {
     }
     setCurrentResumeId(saved.id);
     setCurrentView('builder');
+  }
+
+  function handleNavigateToTailor(jdText) {
+    if (jdText) setTailorJobDescription(jdText);
+    setCurrentView('tailor');
+  }
+
+  function handleApplyTailoredResume(tailored) {
+    setResumeData(tailored);
+    setCurrentResumeId(null);
   }
 
   const activeResumeTitle = resumeData.personal?.fullName
@@ -202,6 +214,18 @@ export default function App() {
           <JobDescriptionMatcher
             currentResumeData={resumeData}
             onNavigateToBuilder={() => setCurrentView('builder')}
+            onNavigateToTailor={handleNavigateToTailor}
+          />
+        )}
+
+        {/* View 4: AI Resume Tailor & Generator */}
+        {currentView === 'tailor' && (
+          <ResumeTailor
+            currentResumeData={resumeData}
+            initialJobDescription={tailorJobDescription}
+            onApplyTailoredResume={handleApplyTailoredResume}
+            onNavigateToBuilder={() => setCurrentView('builder')}
+            onNavigateToTracker={() => setCurrentView('tracker')}
           />
         )}
 

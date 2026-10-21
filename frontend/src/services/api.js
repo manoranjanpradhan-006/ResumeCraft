@@ -160,6 +160,17 @@ export const aiService = {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Failed to calculate ATS score');
     return data;
+  },
+
+  async tailorResume({ currentResume, jobDescription, targetJobTitle = '', companyName = '' }) {
+    const res = await fetch(`${API_BASE}/ai/tailor-resume`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentResume, jobDescription, targetJobTitle, companyName })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to tailor resume to job description');
+    return data;
   }
 };
 

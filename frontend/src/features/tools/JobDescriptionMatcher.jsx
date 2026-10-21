@@ -29,7 +29,7 @@ Key Qualifications & Requirements:
 - Proven ability to optimize database query latency and maintain high availability (99.9%+).
 - Track record of mentoring junior engineers and participating in agile ceremonies.`;
 
-export default function JobDescriptionMatcher({ currentResumeData, onNavigateToBuilder }) {
+export default function JobDescriptionMatcher({ currentResumeData, onNavigateToBuilder, onNavigateToTailor }) {
   const [resumeText, setResumeText] = useState(() => resumeToText(currentResumeData));
   const [jobDescription, setJobDescription] = useState(SAMPLE_JD);
   const [loading, setLoading] = useState(false);
@@ -283,12 +283,20 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 flex justify-end">
+          <div className="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <button
+              onClick={() => onNavigateToTailor ? onNavigateToTailor(jobDescription) : onNavigateToBuilder()}
+              className="px-4 py-2 bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white rounded-lg text-xs font-semibold flex items-center gap-2 transition shadow-lg shadow-indigo-600/25 active:scale-[0.99]"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>✨ Auto-Tailor Resume for this Job Description</span>
+            </button>
+
             <button
               onClick={onNavigateToBuilder}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold flex items-center gap-2 transition"
+              className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold flex items-center gap-2 transition border border-slate-700"
             >
-              <span>Open Resume in Builder to Apply Fixes</span>
+              <span>Open Resume in Builder</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
