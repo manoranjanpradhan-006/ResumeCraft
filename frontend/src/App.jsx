@@ -5,14 +5,19 @@ import AuthModal from './components/AuthModal';
 import SavedResumesModal from './components/SavedResumesModal';
 import ResumeEditor from './features/editor/ResumeEditor';
 import ResumePreview from './features/preview/ResumePreview';
+import LandingPage from './features/landing/LandingPage';
+import JobDescriptionMatcher from './features/tools/JobDescriptionMatcher';
+import AtsChecker from './features/tools/AtsChecker';
 import { initialResumeData, emptyResumeData } from './data/sampleResume';
-import { authService, resumeService } from './services/api';
-import { Edit3, Eye, Sparkles } from 'lucide-react';
+import { authService } from './services/api';
+import { Edit3, Eye } from 'lucide-react';
 
 const LOCAL_STORAGE_KEY = 'resumecraft_current_data';
 const LOCAL_TEMPLATE_KEY = 'resumecraft_current_template';
 
 export default function App() {
+  const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'builder' | 'matcher' | 'checker'
+
   const [resumeData, setResumeData] = useState(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -75,14 +80,12 @@ export default function App() {
   }
 
   function handleExportPdf() {
-    // Fire celebratory confetti!
     confetti({
       particleCount: 80,
       spread: 70,
       origin: { y: 0.15 }
     });
 
-    // Short timeout so confetti starts, then open browser print dialog
     setTimeout(() => {
       window.print();
     }, 200);
@@ -102,12 +105,15 @@ export default function App() {
       setTemplate(saved.template);
     }
     setCurrentResumeId(saved.id);
+    setCurrentView('builder');
   }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
       {/* Top Navbar */}
       <Navbar
+        currentView={currentView}
+        onNavigate={setCurrentView}
         template={template}
         setTemplate={setTemplate}
         onLoadDemo={handleLoadDemo}
@@ -119,60 +125,89 @@ export default function App() {
         onOpenSaved={() => setIsSavedOpen(true)}
       />
 
-      {/* Mobile Switcher (Editor / Preview) */}
-      <div className="no-print lg:hidden px-4 pt-3 pb-1 flex justify-center">
-        <div className="bg-slate-900 border border-slate-800 p-1 rounded-xl flex gap-1 w-full max-w-xs">
-          <button
-            onClick={() => setMobileView('editor')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg transition ${
-              mobileView === 'editor'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Edit3 className="w-3.5 h-3.5" />
-            <span>Editor</span>
-          </button>
-          <button
-            onClick={() => setMobileView('preview')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg transition ${
-              mobileView === 'preview'
-                ? 'bg-indigo-600 text-white shadow'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            <Eye className="w-3.5 h-3.5" />
-            <span>Live Preview</span>
-          </button>
-        </div>
+      {/* Main Content Area based on currentView */}
+      <div className="flex-1 w-full max-w-[1700px] mx-auto p-4 sm:p-6">
+        {/* View 1: Landing Page */}
+        {currentView === 'landing' && (
+          <LandingPage onSelectTool={tool => setCurrentView(tool)} />
+        )}
+
+        {/* View 2: Resume Builder */}
+        {currentView === 'builder' && (
+          <div className="space-y-4">
+            {/* Mobile View Toggle */}
+            <div className="no-print lg:hidden flex justify-center pb-2">
+              <div className="bg-slate-900 border border-slate-800 p-1 rounded-xl flex gap-1 w-full max-w-xs">
+                <button
+                  onClick={() => setMobileView('editor')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg transition ${
+                    mobileView === 'editor'
+                      ? 'bg-indigo-600 text-white shadow'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                  <span>Editor</span>
+                </button>
+                <button
+                  onClick={() => setMobileView('preview')}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold rounded-lg transition ${
+                    mobileView === 'preview'
+                      ? 'bg-indigo-600 text-white shadow'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                  <span>Live Preview</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Split Screen Workspace */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-[calc(100vh-120px)]">
+              {/* Left: Editor */}
+              <section
+                className={`no-print lg:col-span-5 xl:col-span-5 h-full ${
+                  mobileView === 'editor' ? 'block' : 'hidden lg:block'
+                }`}
+              >
+                <ResumeEditor
+                  resumeData={resumeData}
+                  onChange={setResumeData}
+                />
+              </section>
+
+              {/* Right: Live Preview */}
+              <section
+                className={`lg:col-span-7 xl:col-span-7 h-full ${
+                  mobileView === 'preview' ? 'block' : 'hidden lg:block'
+                }`}
+              >
+                <ResumePreview
+                  resumeData={resumeData}
+                  template={template}
+                />
+              </section>
+            </div>
+          </div>
+        )}
+
+        {/* View 3: Job Description Matcher */}
+        {currentView === 'matcher' && (
+          <JobDescriptionMatcher
+            currentResumeData={resumeData}
+            onNavigateToBuilder={() => setCurrentView('builder')}
+          />
+        )}
+
+        {/* View 4: ATS Score Checker */}
+        {currentView === 'checker' && (
+          <AtsChecker
+            currentResumeData={resumeData}
+            onNavigateToBuilder={() => setCurrentView('builder')}
+          />
+        )}
       </div>
-
-      {/* Main Workspace */}
-      <main className="flex-1 max-w-[1700px] w-full mx-auto p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-5 overflow-hidden">
-        {/* Left Pane: Resume Form Editor */}
-        <section
-          className={`no-print lg:col-span-5 xl:col-span-5 h-[calc(100vh-80px)] ${
-            mobileView === 'editor' ? 'block' : 'hidden lg:block'
-          }`}
-        >
-          <ResumeEditor
-            resumeData={resumeData}
-            onChange={setResumeData}
-          />
-        </section>
-
-        {/* Right Pane: Live A4 Resume Preview */}
-        <section
-          className={`lg:col-span-7 xl:col-span-7 h-[calc(100vh-80px)] ${
-            mobileView === 'preview' ? 'block' : 'hidden lg:block'
-          }`}
-        >
-          <ResumePreview
-            resumeData={resumeData}
-            template={template}
-          />
-        </section>
-      </main>
 
       {/* Modals */}
       <AuthModal

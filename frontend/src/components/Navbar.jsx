@@ -1,17 +1,20 @@
 import React from 'react';
 import { 
   FileText, 
-  Download, 
+  Target, 
+  ShieldCheck, 
+  Home, 
   Sparkles, 
   RotateCcw, 
   FolderOpen, 
   User, 
   LogOut, 
-  Check, 
   Printer
 } from 'lucide-react';
 
 export default function Navbar({
+  currentView,
+  onNavigate,
   template,
   setTemplate,
   onLoadDemo,
@@ -20,15 +23,17 @@ export default function Navbar({
   user,
   onOpenAuth,
   onLogout,
-  onOpenSaved,
-  isSaving
+  onOpenSaved
 }) {
   return (
     <nav className="no-print sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2.5">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
         {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 ring-1 ring-white/20">
+        <button
+          onClick={() => onNavigate('landing')}
+          className="flex items-center gap-3 text-left group"
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 ring-1 ring-white/20 group-hover:scale-105 transition-transform">
             <FileText className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -44,51 +49,114 @@ export default function Navbar({
               Build your professional identity & export ATS-ready resumes
             </p>
           </div>
+        </button>
+
+        {/* View Switcher Tabs */}
+        <div className="flex items-center gap-1 bg-slate-950/70 p-1 rounded-xl border border-slate-800 text-xs">
+          <button
+            onClick={() => onNavigate('landing')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              currentView === 'landing'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>Home</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate('builder')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              currentView === 'builder'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Resume Builder</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate('matcher')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              currentView === 'matcher'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Target className="w-3.5 h-3.5 text-violet-400" />
+            <span>JD Matcher</span>
+          </button>
+
+          <button
+            onClick={() => onNavigate('checker')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              currentView === 'checker'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <span>ATS Checker</span>
+          </button>
         </div>
 
-        {/* Template Selector */}
-        <div className="flex items-center gap-1.5 bg-slate-950/70 p-1 rounded-xl border border-slate-800 text-xs">
-          <span className="text-slate-400 font-medium px-2 hidden md:inline">Template:</span>
-          {[
-            { id: 'ats', name: 'ATS-Friendly' },
-            { id: 'minimal', name: 'Minimal' },
-            { id: 'modern', name: 'Modern' },
-            { id: 'classic', name: 'Classic' }
-          ].map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTemplate(t.id)}
-              className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
-                template === t.id
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              {t.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Action Controls */}
+        {/* Builder Context Controls or General Actions */}
         <div className="flex items-center gap-2">
-          {/* Load Sample Demo */}
-          <button
-            onClick={onLoadDemo}
-            title="Load comprehensive sample resume"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline">Load Sample</span>
-          </button>
+          {currentView === 'builder' && (
+            <>
+              {/* Template Selector */}
+              <div className="hidden xl:flex items-center gap-1 bg-slate-950/70 p-1 rounded-xl border border-slate-800 text-xs mr-1">
+                {[
+                  { id: 'ats', name: 'ATS' },
+                  { id: 'minimal', name: 'Minimal' },
+                  { id: 'modern', name: 'Modern' },
+                  { id: 'classic', name: 'Classic' }
+                ].map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTemplate(t.id)}
+                    className={`px-2 py-1 rounded-md font-medium text-[11px] transition ${
+                      template === t.id
+                        ? 'bg-indigo-600 text-white'
+                        : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {t.name}
+                  </button>
+                ))}
+              </div>
 
-          {/* Reset */}
-          <button
-            onClick={onReset}
-            title="Clear all fields"
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-red-400 bg-slate-800/40 hover:bg-slate-800 border border-slate-700/50 transition"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-          </button>
+              {/* Load Sample Demo */}
+              <button
+                onClick={onLoadDemo}
+                title="Load comprehensive sample resume"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 transition"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">Sample</span>
+              </button>
+
+              {/* Reset */}
+              <button
+                onClick={onReset}
+                title="Clear all fields"
+                className="p-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-red-400 bg-slate-800/40 hover:bg-slate-800 border border-slate-700/50 transition"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+
+              {/* Download PDF */}
+              <button
+                onClick={onExportPdf}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 hover:from-indigo-600 hover:to-violet-700 shadow-md shadow-indigo-500/20 active:scale-95 transition-all"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>PDF</span>
+              </button>
+            </>
+          )}
 
           {/* Saved Resumes Button */}
           {user ? (
@@ -97,7 +165,7 @@ export default function Navbar({
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-200 bg-slate-800 hover:bg-slate-700 border border-slate-700 transition"
             >
               <FolderOpen className="w-3.5 h-3.5 text-indigo-400" />
-              <span>My Resumes</span>
+              <span className="hidden sm:inline">Resumes</span>
             </button>
           ) : null}
 
@@ -125,15 +193,6 @@ export default function Navbar({
               <span>Sign In</span>
             </button>
           )}
-
-          {/* Export / Print PDF Button */}
-          <button
-            onClick={onExportPdf}
-            className="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 hover:from-indigo-600 hover:to-violet-700 shadow-md shadow-indigo-500/20 active:scale-95 transition-all"
-          >
-            <Printer className="w-4 h-4" />
-            <span>Download PDF</span>
-          </button>
         </div>
       </div>
     </nav>
