@@ -8,6 +8,7 @@ import ResumePreview from './features/preview/ResumePreview';
 import LandingPage from './features/landing/LandingPage';
 import JobDescriptionMatcher from './features/tools/JobDescriptionMatcher';
 import AtsChecker from './features/tools/AtsChecker';
+import ApplicationTracker from './features/tracker/ApplicationTracker';
 import { initialResumeData, emptyResumeData } from './data/sampleResume';
 import { authService } from './services/api';
 import { Edit3, Eye } from 'lucide-react';
@@ -16,7 +17,7 @@ const LOCAL_STORAGE_KEY = 'resumecraft_current_data';
 const LOCAL_TEMPLATE_KEY = 'resumecraft_current_template';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'builder' | 'matcher' | 'checker'
+  const [currentView, setCurrentView] = useState('landing'); // 'landing' | 'builder' | 'matcher' | 'checker' | 'tracker'
 
   const [resumeData, setResumeData] = useState(() => {
     try {
@@ -107,6 +108,10 @@ export default function App() {
     setCurrentResumeId(saved.id);
     setCurrentView('builder');
   }
+
+  const activeResumeTitle = resumeData.personal?.fullName
+    ? `${resumeData.personal.fullName}'s Resume`
+    : 'Active Resume';
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
@@ -205,6 +210,13 @@ export default function App() {
           <AtsChecker
             currentResumeData={resumeData}
             onNavigateToBuilder={() => setCurrentView('builder')}
+          />
+        )}
+
+        {/* View 5: Job Application Tracker */}
+        {currentView === 'tracker' && (
+          <ApplicationTracker
+            currentResumeTitle={activeResumeTitle}
           />
         )}
       </div>

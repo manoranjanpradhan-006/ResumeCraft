@@ -4,7 +4,6 @@ import {
   Sparkles, 
   AlertCircle, 
   CheckCircle2, 
-  HelpCircle, 
   ArrowRight, 
   Loader2, 
   FileText, 
@@ -163,7 +162,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6 animate-in fade-in duration-300">
           {/* Top Score Banner */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
-            {/* Match Score */}
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-full bg-slate-900 border-4 border-indigo-500 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/20">
                 <span className="text-lg font-extrabold text-white">
@@ -180,7 +178,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
               </div>
             </div>
 
-            {/* Shortlisting Chance */}
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
                 <TrendingUp className="w-6 h-6 text-emerald-400" />
@@ -195,7 +192,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
               </div>
             </div>
 
-            {/* AI Engine Provider */}
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-violet-500/10 border border-violet-500/30 flex items-center justify-center shrink-0">
                 <Sparkles className="w-6 h-6 text-violet-400" />
@@ -211,7 +207,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
             </div>
           </div>
 
-          {/* Overview Summary */}
           {results.summary && (
             <div className="p-4 rounded-xl bg-indigo-950/20 border border-indigo-800/40 text-xs sm:text-sm text-indigo-200 leading-relaxed">
               <strong>Match Evaluation:</strong> {results.summary}
@@ -220,7 +215,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
 
           {/* Keywords Breakdown */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Matching Keywords */}
             <div className="p-4 bg-slate-950 rounded-xl border border-slate-800">
               <div className="flex items-center gap-2 mb-2 text-xs font-bold text-emerald-400 uppercase tracking-wider">
                 <CheckCircle2 className="w-4 h-4" />
@@ -238,7 +232,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
               </div>
             </div>
 
-            {/* Missing Keywords */}
             <div className="p-4 bg-slate-950 rounded-xl border border-slate-800">
               <div className="flex items-center gap-2 mb-2 text-xs font-bold text-rose-400 uppercase tracking-wider">
                 <XCircle className="w-4 h-4" />
@@ -259,7 +252,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
 
           {/* Detailed Diagnosis: What is Wrong & How to Fix */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-            {/* What is Wrong */}
             <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
               <div className="flex items-center gap-2 text-sm font-bold text-amber-400">
                 <AlertCircle className="w-4 h-4" />
@@ -275,7 +267,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
               </ul>
             </div>
 
-            {/* How It Can Be Fixed */}
             <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
               <div className="flex items-center gap-2 text-sm font-bold text-indigo-400">
                 <Wrench className="w-4 h-4" />
@@ -292,7 +283,6 @@ export default function JobDescriptionMatcher({ currentResumeData, onNavigateToB
             </div>
           </div>
 
-          {/* Action Footer */}
           <div className="pt-4 border-t border-slate-800 flex justify-end">
             <button
               onClick={onNavigateToBuilder}

@@ -51,15 +51,19 @@ export const authService = {
   async getMe() {
     const token = this.getToken();
     if (!token) return null;
-    const res = await fetch(`${API_BASE}/auth/me`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    if (!res.ok) {
-      this.clearAuth();
+    try {
+      const res = await fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) {
+        this.clearAuth();
+        return null;
+      }
+      const data = await res.json();
+      return data.user;
+    } catch {
       return null;
     }
-    const data = await res.json();
-    return data.user;
   }
 };
 
@@ -159,3 +163,120 @@ export const aiService = {
   }
 };
 
+export const applicationService = {
+  LOCAL_KEY: 'resumecraft_local_applications',
+
+  getLocal() {
+    try {
+      const raw = localStorage.getItem(this.LOCAL_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  setLocal(items) {
+    localStorage.setItem(this.LOCAL_KEY, JSON.stringify(items));
+  },
+
+  async listApplications() {
+    const token = authService.getToken();
+    if (token) {
+      try {
+        const res = await fetch(`${API_BASE}/applications`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          return data.applications || [];
+        }
+      } catch (err) {
+        console.warn('Backend list applications failed, fallback to local:', err);
+      }
+    }
+    return this.getLocal();
+  },
+
+  async createApplication(appData) {
+    const token = authService.getToken();
+    if (token) {
+      try {
+        const res = await fetch(`${API_BASE}/applications`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(appData)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          return data.application;
+        }
+      } catch (err) {
+        console.warn('Backend create application failed, fallback to local:', err);
+      }
+    }
+
+    const localList = this.getLocal();
+    const newApp = {
+      ...appData,
+      id: `local-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    localList.unshift(newApp);
+    this.setLocal(localList);
+    return newApp;
+  },
+
+  async updateApplication(id, updates) {
+    const token = authService.getToken();
+    if (token && !id.startsWith('local-')) {
+      try {
+        const res = await fetch(`${API_BASE}/applications/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(updates)
+        });
+        if (res.ok) {
+          const data = await res.json();
+          return data.application;
+        }
+      } catch (err) {
+        console.warn('Backend update failed:', err);
+      }
+    }
+
+    const localList = this.getLocal();
+    const idx = localList.findIndex(a => a.id === id);
+    if (idx !== -1) {
+      localList[idx] = { ...localList[idx], ...updates, updatedAt: new Date().toISOString() };
+      this.setLocal(localList);
+      return localList[idx];
+    }
+    return null;
+  },
+
+  async deleteApplication(id) {
+    const token = authService.getToken();
+    if (token && !id.startsWith('local-')) {
+      try {
+        const res = await fetch(`${API_BASE}/applications/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) return true;
+      } catch (err) {
+        console.warn('Backend delete failed:', err);
+      }
+    }
+
+    const localList = this.getLocal().filter(a => a.id !== id);
+    this.setLocal(localList);
+    return true;
+  }
+};

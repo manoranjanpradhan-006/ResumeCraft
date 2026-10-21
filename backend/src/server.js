@@ -1,10 +1,11 @@
-import express from 'express';
+  import express from 'express';
 import cors from 'cors';
 import { config } from './config/config.js';
 import { initDatabase } from './services/storage.js';
 import authRoutes from './routes/authRoutes.js';
 import resumeRoutes from './routes/resumeRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import applicationRoutes from './routes/applicationRoutes.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/resumes', resumeRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/applications', applicationRoutes);
 
 // 404 handler
 app.use((req, res) => {

@@ -5,9 +5,11 @@ import mongoose from 'mongoose';
 import { config } from '../config/config.js';
 import { User } from '../models/User.js';
 import { Resume } from '../models/Resume.js';
+import { Application } from '../models/Application.js';
 
 let MongoUser = null;
 let MongoResume = null;
+let MongoApplication = null;
 let isMongoConnected = false;
 
 // Initialize MongoDB connection if URI provided
@@ -20,6 +22,7 @@ export async function initDatabase() {
       });
       MongoUser = User;
       MongoResume = Resume;
+      MongoApplication = Application;
       isMongoConnected = true;
       console.log(' Successfully connected to MongoDB Database!');
       return;
@@ -44,7 +47,7 @@ function ensureLocalStore() {
   if (!fs.existsSync(config.dataFile)) {
     fs.writeFileSync(
       config.dataFile,
-      JSON.stringify({ users: [], resumes: [] }, null, 2),
+      JSON.stringify({ users: [], resumes: [], applications: [] }, null, 2),
       'utf8'
     );
   }
@@ -54,10 +57,12 @@ function readLocalStore() {
   ensureLocalStore();
   try {
     const raw = fs.readFileSync(config.dataFile, 'utf8');
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (!parsed.applications) parsed.applications = [];
+    return parsed;
   } catch (err) {
     console.error('Error reading local store:', err);
-    return { users: [], resumes: [] };
+    return { users: [], resumes: [], applications: [] };
   }
 }
 
@@ -230,3 +235,161 @@ export const resumeStore = {
     return deleted;
   }
 };
+
+// Application Tracking Operations
+export const applicationStore = {
+  async listByUser(userId) {
+    if (isMongoConnected && MongoApplication) {
+      const items = await MongoApplication.find({ userId }).sort({ updatedAt: -1 });
+      return items.map(a => ({
+        id: a._id.toString(),
+        userId: a.userId,
+        company: a.company,
+        position: a.position,
+        location: a.location,
+        salary: a.salary,
+        status: a.status,
+        appliedDate: a.appliedDate,
+        jobUrl: a.jobUrl,
+        resumeUsed: a.resumeUsed,
+        notes: a.notes,
+        createdAt: a.createdAt,
+        updatedAt: a.updatedAt
+      }));
+    }
+    const store = readLocalStore();
+    return (store.applications || [])
+      .filter(a => a.userId === userId)
+      .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+  },
+
+  async getById(id, userId) {
+    if (isMongoConnected && MongoApplication) {
+      const a = await MongoApplication.findOne({ _id: id, userId });
+      if (!a) return null;
+      return {
+        id: a._id.toString(),
+        userId: a.userId,
+        company: a.company,
+        position: a.position,
+        location: a.location,
+        salary: a.salary,
+        status: a.status,
+        appliedDate: a.appliedDate,
+        jobUrl: a.jobUrl,
+        resumeUsed: a.resumeUsed,
+        notes: a.notes,
+        createdAt: a.createdAt,
+        updatedAt: a.updatedAt
+      };
+    }
+    const store = readLocalStore();
+    return (store.applications || []).find(a => a.id === id && a.userId === userId) || null;
+  },
+
+  async create({ userId, company, position, location, salary, status, appliedDate, jobUrl, resumeUsed, notes }) {
+    if (isMongoConnected && MongoApplication) {
+      const a = await MongoApplication.create({
+        userId,
+        company,
+        position,
+        location: location || '',
+        salary: salary || '',
+        status: status || 'applied',
+        appliedDate: appliedDate || new Date().toISOString().split('T')[0],
+        jobUrl: jobUrl || '',
+        resumeUsed: resumeUsed || 'Default Resume',
+        notes: notes || ''
+      });
+      return {
+        id: a._id.toString(),
+        userId: a.userId,
+        company: a.company,
+        position: a.position,
+        location: a.location,
+        salary: a.salary,
+        status: a.status,
+        appliedDate: a.appliedDate,
+        jobUrl: a.jobUrl,
+        resumeUsed: a.resumeUsed,
+        notes: a.notes,
+        createdAt: a.createdAt,
+        updatedAt: a.updatedAt
+      };
+    }
+    const store = readLocalStore();
+    if (!store.applications) store.applications = [];
+    const newApp = {
+      id: crypto.randomUUID(),
+      userId,
+      company,
+      position,
+      location: location || '',
+      salary: salary || '',
+      status: status || 'applied',
+      appliedDate: appliedDate || new Date().toISOString().split('T')[0],
+      jobUrl: jobUrl || '',
+      resumeUsed: resumeUsed || 'Default Resume',
+      notes: notes || '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    store.applications.push(newApp);
+    writeLocalStore(store);
+    return newApp;
+  },
+
+  async update(id, userId, updates) {
+    if (isMongoConnected && MongoApplication) {
+      const a = await MongoApplication.findOneAndUpdate(
+        { _id: id, userId },
+        { ...updates, updatedAt: new Date() },
+        { new: true }
+      );
+      if (!a) return null;
+      return {
+        id: a._id.toString(),
+        userId: a.userId,
+        company: a.company,
+        position: a.position,
+        location: a.location,
+        salary: a.salary,
+        status: a.status,
+        appliedDate: a.appliedDate,
+        jobUrl: a.jobUrl,
+        resumeUsed: a.resumeUsed,
+        notes: a.notes,
+        createdAt: a.createdAt,
+        updatedAt: a.updatedAt
+      };
+    }
+    const store = readLocalStore();
+    if (!store.applications) store.applications = [];
+    const index = store.applications.findIndex(a => a.id === id && a.userId === userId);
+    if (index === -1) return null;
+    store.applications[index] = {
+      ...store.applications[index],
+      ...updates,
+      updatedAt: new Date().toISOString()
+    };
+    writeLocalStore(store);
+    return store.applications[index];
+  },
+
+  async delete(id, userId) {
+    if (isMongoConnected && MongoApplication) {
+      const res = await MongoApplication.deleteOne({ _id: id, userId });
+      return res.deletedCount > 0;
+    }
+    const store = readLocalStore();
+    if (!store.applications) return false;
+    const initialLen = store.applications.length;
+    store.applications = store.applications.filter(a => !(a.id === id && a.userId === userId));
+    const deleted = store.applications.length < initialLen;
+    if (deleted) {
+      writeLocalStore(store);
+    }
+    return deleted;
+  }
+};
+

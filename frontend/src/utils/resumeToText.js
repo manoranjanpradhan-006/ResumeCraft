@@ -1,7 +1,15 @@
 export function resumeToText(resumeData) {
   if (!resumeData) return '';
 
-  const { personal = {}, summary = '', experience = [], education = [], skills = {}, projects = [], certifications = [] } = resumeData;
+  const { 
+    personal = {}, 
+    summary = '', 
+    experience = [], 
+    education = [], 
+    skills = {}, 
+    projects = [], 
+    certifications = [] 
+  } = resumeData;
 
   const lines = [];
 
@@ -29,7 +37,7 @@ export function resumeToText(resumeData) {
   }
 
   // Experience
-  if (experience.length) {
+  if (experience && experience.length) {
     lines.push('WORK EXPERIENCE');
     experience.forEach(exp => {
       lines.push(`${exp.position || ''} at ${exp.company || ''} (${exp.startDate || ''} - ${exp.current ? 'Present' : exp.endDate || ''})`);
@@ -58,8 +66,8 @@ export function resumeToText(resumeData) {
   }
 
   // Projects
-  if (projects.length) {
-    lines.push('PROJECTS');
+  if (projects && projects.length) {
+    lines.push('KEY PROJECTS');
     projects.forEach(p => {
       lines.push(`${p.title || ''} (${(p.technologies || []).join(', ')})`);
       if (p.link || p.github) lines.push(`Links: ${[p.link, p.github].filter(Boolean).join(' | ')}`);
@@ -69,7 +77,7 @@ export function resumeToText(resumeData) {
   }
 
   // Education
-  if (education.length) {
+  if (education && education.length) {
     lines.push('EDUCATION');
     education.forEach(edu => {
       lines.push(`${edu.degree || ''} in ${edu.field || ''} - ${edu.institution || ''} (${edu.startDate || ''} - ${edu.endDate || ''})`);
@@ -79,7 +87,7 @@ export function resumeToText(resumeData) {
   }
 
   // Certifications
-  if (certifications.length) {
+  if (certifications && certifications.length) {
     lines.push('CERTIFICATIONS');
     certifications.forEach(c => {
       lines.push(`${c.name || ''} - ${c.issuer || ''} (${c.date || ''})`);

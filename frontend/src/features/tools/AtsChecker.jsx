@@ -8,9 +8,9 @@ import {
   Loader2, 
   FileText, 
   Check, 
-  AlertTriangle,
-  Award,
-  Wrench
+  AlertTriangle, 
+  Award, 
+  Wrench 
 } from 'lucide-react';
 import { aiService } from '../../services/api';
 import { resumeToText } from '../../utils/resumeToText';
@@ -114,7 +114,6 @@ export default function AtsChecker({ currentResumeData, onNavigateToBuilder }) {
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6 animate-in fade-in duration-300">
           {/* Top Score Banner */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-b border-slate-800 pb-6">
-            {/* Overall Score */}
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4">
               <div className="relative w-16 h-16 rounded-full bg-slate-900 border-4 border-emerald-500 flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/20">
                 <span className="text-xl font-extrabold text-white">
@@ -131,7 +130,6 @@ export default function AtsChecker({ currentResumeData, onNavigateToBuilder }) {
               </div>
             </div>
 
-            {/* Letter Grade */}
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center shrink-0">
                 <Award className="w-6 h-6 text-emerald-400" />
@@ -146,7 +144,6 @@ export default function AtsChecker({ currentResumeData, onNavigateToBuilder }) {
               </div>
             </div>
 
-            {/* Audit Engine */}
             <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center shrink-0">
                 <ShieldCheck className="w-6 h-6 text-indigo-400" />
@@ -195,7 +192,6 @@ export default function AtsChecker({ currentResumeData, onNavigateToBuilder }) {
 
           {/* Strengths & Issues */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Strengths */}
             <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
               <div className="flex items-center gap-2 text-sm font-bold text-emerald-400">
                 <CheckCircle2 className="w-4 h-4" />
@@ -211,7 +207,6 @@ export default function AtsChecker({ currentResumeData, onNavigateToBuilder }) {
               </ul>
             </div>
 
-            {/* Issues */}
             <div className="p-5 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
               <div className="flex items-center gap-2 text-sm font-bold text-amber-400">
                 <AlertTriangle className="w-4 h-4" />
@@ -228,7 +223,6 @@ export default function AtsChecker({ currentResumeData, onNavigateToBuilder }) {
             </div>
           </div>
 
-          {/* Actionable Fixes */}
           {results.actionableFixes && results.actionableFixes.length > 0 && (
             <div className="p-5 rounded-xl bg-indigo-950/20 border border-indigo-800/40 space-y-3">
               <div className="flex items-center gap-2 text-sm font-bold text-indigo-300">
@@ -246,7 +240,6 @@ export default function AtsChecker({ currentResumeData, onNavigateToBuilder }) {
             </div>
           )}
 
-          {/* Action Footer */}
           <div className="pt-4 border-t border-slate-800 flex justify-end">
             <button
               onClick={onNavigateToBuilder}
