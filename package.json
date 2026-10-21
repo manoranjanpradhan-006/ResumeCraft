@@ -1,0 +1,32 @@
+{
+  "name": "resumecraft",
+  "version": "1.0.0",
+  "description": "ResumeCraft - Modern ATS Resume Builder with Express backend and React frontend",
+  "scripts": {
+    "dev": "concurrently -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manoranjanpradhan-006/ResumeCraft.git"
+  },
+  "keywords": [
+    "resume",
+    "ats-resume",
+    "resume-builder",
+    "react",
+    "express"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/manoranjanpradhan-006/ResumeCraft/issues"
+  },
+  "homepage": "https://github.com/manoranjanpradhan-006/ResumeCraft#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
+}
